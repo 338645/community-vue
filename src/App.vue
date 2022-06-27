@@ -73,9 +73,9 @@
                 :offset="countOffsetUtil(NavMenu.menus[4].id,NavMenu.menus,NavMenu.menus[4].countOffset)"
             >
 
-              <el-submenu :index="NavMenu.menus[4].id" v-if="user !=null">
+              <el-submenu :index="NavMenu.menus[4].id" v-if="getUser !=null">
 
-                <template #title>{{ user.name }}</template>
+                <template #title>{{ getUser.name }}</template>
 
                 <el-menu-item :index=NavMenu.menus[4].id+-+submenu.id :disabled="submenu.disabled"
                               @click="selectMenu(submenu.index,this.$router,this.$route)"
@@ -139,23 +139,45 @@ export default {
     let state = this.$urlUtil('state')
     let code = this.$urlUtil('code')
     //代理api，让服务器能传来token，如果有token就像服务器请求用户信息
-    if (state != null && code != null) {
+    if (state != null && code != null && this.user == null) {
       store.dispatch({
         type: 'login',
         types: {},
         code,
         state
       })
+    } else if (this.$cookies.get('token') && this.user == null) {
+      //操作cookie,暂时不需要
     }
   },
   computed: {
-    ...mapState(['user']),
-    ...mapGetters(['getUser'])
-  }
-  ,
+    ...mapState(['user', 'userMessage']),
+    ...mapGetters(['getUser']),
+  },
   methods: {
     login() {
       location.href = "https://github.com/login/oauth/authorize?client_id=ae6d4adb632935201bcb&redirect_uri=http://localhost:8080/&scope=user&state=1"
+    }
+  }, created() {
+    //default: expireTimes = 1d,path=/
+    //将vuex的信息存入sessionStorge中
+    if (sessionStorage.getItem('store')) {
+      //使用一个Object.assign复制当前state中的属性和session中的state
+      this.$store.replaceState(Object.assign(
+          {},
+          this.$store.state,
+          JSON.parse(sessionStorage.getItem('store'))
+      ))
+    }
+    // 在页面刷新时将vuex里的信息保存到sessionStorage里
+    // beforeunload事件在页面刷新时先触发
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.setItem('store', JSON.stringify(this.$store.state))
+    })
+  }, watch: {
+    userMessage(newMsg) {
+      console.log(newMsg)
+      window.alert(newMsg);
     }
   }
 }

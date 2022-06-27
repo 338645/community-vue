@@ -1,5 +1,6 @@
 import {createStore} from 'vuex'
 import axios from "axios";
+import router from "@/router";
 
 export default createStore({
     state: {
@@ -9,8 +10,6 @@ export default createStore({
     getters: {
         getUser(state) {
             //判断本地是否有cookie
-            //如果有则请求服务端获取
-
             return state.user
         }
     },
@@ -20,10 +19,14 @@ export default createStore({
         },
         deleteUser(state){
             state.user = null
+        },
+        updateUserMessage(state,newMsg){
+            state.userMessage = newMsg
         }
     },
     actions: {
         login({commit},msg) {
+            axios.defaults.withCredentials = true
             axios.get("http://localhost:8887/callback", {
                 params: {
                     state:msg.state,
@@ -32,7 +35,10 @@ export default createStore({
             }).then(resp => {
                 if (typeof resp.data != 'string') {
                     commit('updateUser', resp.data)
-                }else commit('deleteUser')
+                    router.push("/")
+                    commit('updateUserMessage','登陆成功')
+                }
+                else commit('deleteUser')
             }).catch(err => {
                 console.log(err)
                 commit('deleteUser')
