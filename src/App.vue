@@ -186,14 +186,27 @@ export default {
 </script>
 
 <style scoped>
-
+.el-footer{
+  background-color: #545c64;
+}
 .el-menu-demo {
   height: 100%;
   width: 100%;
 }
 
+.el-affix{
+  height: 100%;
+  margin: 0px;
+}
+
+.el-menu-demo{
+  height: 100%;
+}
+
 #main {
   height: 100%;
+  margin: 0px;
+  padding: 0px;
 }
 
 .el-container {
