@@ -8,79 +8,58 @@ const NavMenu = ref({
         defaultActiveMenu: "2",
         mode: "horizontal",
         class: "el-menu-demo"
-    },
-    menus: [
-        {
-            id: '1',
-            span: 2,
-            messageMenu: '图标',
-            index: '',
-            disabled: true,
-            countOffset: false,
-            subMenu: false,
-            children: null
+    }, menus: [{
+        id: '1',
+        span: 2,
+        messageMenu: '图标',
+        index: '',
+        disabled: false,
+        countOffset: false,
+        subMenu: false,
+        children: null
+    }, {
+        id: '2',
+        span: 2,
+        messageMenu: '首页',
+        index: 'home',
+        disabled: false,
+        countOffset: false,
+        subMenu: false,
+        children: null
+    }, {
+        id: '3',
+        span: 6,
+        messageMenu: '搜索问题',
+        index: '',
+        disabled: false,
+        countOffset: false,
+        subMenu: false,
+        children: null
+    }, {
+        id: '4',
+        span: 2,
+        messageMenu: '发表问题',
+        index: 'publish',
+        disabled: false,
+        countOffset: true,
+        subMenu: false,
+        children: null
+    }, {
+        id: '5', span: 2, messageMenu: null, index: '', disabled: false, countOffset: false, subMenu: true, children: [{
+            id: '1', messageMenu: '个人中心', index: 'user', disabled: false,
         }, {
-            id: '2',
-            span: 2,
-            messageMenu: '首页',
-            index: 'home',
-            disabled: false,
-            countOffset: false,
-            subMenu: false,
-            children: null
+            id: '2', messageMenu: '消息', index: 'user/userMsg', disabled: false,
         }, {
-            id: '3',
-            span: 6,
-            messageMenu: '搜索问题',
-            index: '',
-            disabled: false,
-            countOffset: false,
-            subMenu: false,
-            children: null
-        }, {
-            id: '4',
-            span: 2,
-            messageMenu: '发表问题',
-            index: 'publish',
-            disabled: false,
-            countOffset: true,
-            subMenu: false,
-            children: null
-        }, {
-            id: '5',
-            span: 2,
-            messageMenu: null,
-            index: '',
-            disabled: false,
-            countOffset: false,
-            subMenu: true,
-            children: [
-                {
-                    id: '1',
-                    messageMenu: '个人中心',
-                    index: '',
-                    disabled: false,
-                },
-                {
-                    id: '2',
-                    messageMenu: '消息',
-                    index: '',
-                    disabled: false,
-                },
-                {
-                    id: '3',
-                    messageMenu: '我的问题',
-                    index: '',
-                    disabled: false,
-                }
-            ]
-        }
-    ]
+            id: '3', messageMenu: '退出', index: 'quit', disabled: false,
+        }]
+    }]
 })
 
 const selectMenu = (url, router, route) => {
-    if (url != '') {
+    if (url !== '' && url !== 'user/userMsg') {
         router.push({name: url})
+    } else {
+        router.push({path: '/user/userMsg'})
     }
 }
 
@@ -97,7 +76,5 @@ const countOffsetUtil = (id, menus, flag) => {
 }
 
 export {
-    selectMenu,
-    NavMenu,
-    countOffsetUtil
+    selectMenu, NavMenu, countOffsetUtil
 }

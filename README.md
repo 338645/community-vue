@@ -18,4 +18,6 @@
 
 [vue-cookies](https://blog.csdn.net/m0_46617375/article/details/119222286)
 
+[导航守卫配置 404 页面](https://blog.csdn.net/weixin_37861326/article/details/82383465)
+
 # community-vue 

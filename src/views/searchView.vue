@@ -1,6 +1,6 @@
 <template>
   <el-row>
-    <el-col class="demo-border" :md="16">
+    <el-col class="demo-border" :md="24">
       <el-row style="height: 60px">
         <h3 style="margin:0px">
           <Fold style="width: 30px; height: 30px;position: relative;top: 8px"/>
@@ -54,39 +54,17 @@
                      @current-change="currentChange"
                      style="float: right"/>
     </el-col>
-
-    <el-col :md="8">
-      <h3>
-        <el-icon>
-          <Menu/>
-        </el-icon>
-        分类
-      </h3>
-      <el-button v-for="tag in this.tags" class="el-button--success" size="small" style="margin-top: 10px"
-                 @click="getQuestionsByTag(tag)">
-        {{ tag }}
-      </el-button>
-      <el-divider/>
-      <h3>热门问题</h3>
-    </el-col>
-
-
   </el-row>
 </template>
 
 <script>
-import {Expand, Fold} from "@element-plus/icons";
 import axios from "axios";
 import {time} from "@/util/timeFormat";
-import router from "@/router";
-import {mapState} from "vuex";
 
 export default {
-  name: 'home',
+  name: "searchView",
   data() {
     return {
-      fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       questions: {},
       pageInfo: {
         //分页数
@@ -96,81 +74,36 @@ export default {
         //每页显示个数,
         pageSize: 6
       },
-      tags: ['全部'],
-      tag: '全部'
+      search: '',
+      tag: ''
     }
-  }, setup() {
   },
-  components: {
-    Fold,
-    Expand,
-  }, mounted() {
-    //从后端查询到questions回显
+  mounted() {
+    this.search = this.$route.query.search
+    this.tag = this.$route.query.tag
     axios.defaults.withCredentials = true
-    axios.get("/server/getQuestions", {
+    axios.get("/server/search", {
       params: {
         pageSize: this.pageInfo.pageSize,
         currentPage: this.pageInfo.currentPage,
-        tag: this.tag
+        tag: this.tag,
+        search: this.search
       }
     }).then(resp => {
       this.questions = resp.data
-      this.pageInfo.total = parseInt(this.$cookies.get("questionTotal"))
+      //console.log(parseInt(this.$cookies.get("questionTotal")))
+      this.pageInfo.total = parseInt(this.$cookies.get("questionTotal"));
     }).catch(err => {
-      console.log(err.data)
+      console.log(err)
     })
-  }, methods: {
-    getQuestionsByTag(tag) {
-      axios.defaults.withCredentials = true
-      axios.get("/server/getQuestions", {
-        params: {
-          pageSize: this.pageInfo.pageSize,
-          currentPage: this.pageInfo.currentPage,
-          tag: tag
-        }
-      }).then(resp => {
-        this.questions = resp.data
-        this.tag = tag
-        this.pageInfo.total = parseInt(this.$cookies.get("questionTotal"))
-        sessionStorage.setItem("searchTag", this.tag);
-      }).catch(err => {
-        console.log(err.data)
-      })
-    },
-    getTagsFserver() {
-      axios.defaults.withCredentials = true
-      axios.get("/server/getTags").then(resp => {
-        for (let i = 0; i < resp.data.length; i++) {
-          this.tags.push(resp.data[i])
-        }
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    getTime(value) {
-      return time(value)
-    },
-    currentChange(newValue) {
-      this.pageInfo.currentPage = newValue
-      console.log(this.pageInfo.currentPage)
-      axios.defaults.withCredentials = true
-      axios.get("/server/getQuestions", {
-        params: {
-          pageSize: this.pageInfo.pageSize,
-          currentPage: this.pageInfo.currentPage,
-          tag: this.tag,
-        }
-      }).then(resp => {
-        this.questions = resp.data
-        this.pageInfo.total = parseInt(this.$cookies.get("questionTotal"))
-      }).catch(err => {
-        console.log(err.data)
-      })
-    }, getTags(question) {
+  },
+  methods: {
+    getTags(question) {
       let split = question.tag.split(',');
       //split.pop();
       return split
-    }, updateViewCount(question) {
+    },
+    updateViewCount(question) {
       if (typeof this.user.id !== 'undefined' && this.user.id !== question.user.id) {
         axios.defaults.withCredentials = true;
         axios.get("/server/updateViewCount", {
@@ -183,21 +116,41 @@ export default {
 
         })
       }
+    }, getTime(value) {
+      return time(value)
+    }, currentChange(newValue) {
+      this.pageInfo.currentPage = newValue
+      //console.log(this.pageInfo.currentPage)
+      axios.defaults.withCredentials = true
+      axios.get("/server/search", {
+        params: {
+          pageSize: this.pageInfo.pageSize,
+          currentPage: this.pageInfo.currentPage,
+          tag: this.tag,
+          search: this.search
+        }
+      }).then(resp => {
+        this.questions = resp.data
+        //console.log(parseInt(this.$cookies.get("questionTotal")))
+        this.pageInfo.total = parseInt(this.$cookies.get("questionTotal"));
+      }).catch(err => {
+        console.log(err)
+      })
     }
-  },
-  computed: {
-    ...mapState(['user'])
-  }, created() {
-    this.getTagsFserver()
-    if (sessionStorage.getItem("searchTag")) {
-      this.tag = sessionStorage.getItem("searchTag")
+  }, watch: {
+    '$route.query.search': function () {
+      this.search = this.$route.query.search
+      this.currentChange(this.pageInfo.total)
+    },
+    '$route.query.tag': function () {
+      this.tag = this.$route.query.tag
+      this.currentChange(this.pageInfo.total)
     }
   }
 }
 </script>
 
 <style scoped>
-
 .el-row {
   background: white;
   height: 100%;
