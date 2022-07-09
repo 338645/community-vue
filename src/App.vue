@@ -158,6 +158,7 @@ import axios from "axios";
 import {ElMessage} from "element-plus";
 import router from "@/router";
 import footer from "@/components/footer"
+import {v4 as uuidv4} from "uuid"
 
 export default {
   components: {
@@ -244,7 +245,17 @@ export default {
       sessionStorage.setItem('dialogVis', this.dialogVisible)
     },
     login() {
-      location.href = "https://github.com/login/oauth/authorize?client_id=ae6d4adb632935201bcb&redirect_uri=http://localhost:8080/&scope=user&state=1"
+      let target = 'https://github.com/login/oauth/authorize?'
+      let state = uuidv4();
+      let redirect_uri = "http://localhost:8080/"
+      let client_id = 'ae6d4adb632935201bcb'
+      let scope = 'user'
+      location.href = target
+          + "client_id=" + client_id + "&"
+          + "redirect_uri=" + redirect_uri + "&"
+          + "scope=" + scope + "&"
+          + "state=" + state
+      //location.href = "https://github.com/login/oauth/authorize?client_id=ae6d4adb632935201bcb&redirect_uri=http://localhost:8080/&scope=user&state=1"
     }, quitUser() {
       //从store中删除用户
       store.commit('deleteUser')
