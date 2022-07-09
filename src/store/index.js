@@ -31,7 +31,7 @@ export default createStore({
     actions: {
         login({commit}, msg) {
             axios.defaults.withCredentials = true
-            axios.get("http://localhost:8887/callback", {
+            axios.get("/server/callback", {
                 params: {
                     state: msg.state,
                     code: msg.code
@@ -49,7 +49,7 @@ export default createStore({
         },
         getUserByToken({commit}, token) {
             axios.defaults.withCredentials = true
-            axios.post("http://localhost:8887/getUserByToken", {
+            axios.post("/server/getUserByToken", {
                 token: token.token
             }).then((resp) => {
                 console.log(resp.data);

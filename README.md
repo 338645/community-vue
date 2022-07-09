@@ -21,3 +21,5 @@
 [导航守卫配置 404 页面](https://blog.csdn.net/weixin_37861326/article/details/82383465)
 
 # community-vue 
+
+问题一：登录应该是同步的不允许用户进行其他操作

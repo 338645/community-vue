@@ -139,7 +139,7 @@
         <el-carousel-item v-for="item in 4" :key="item">
           <el-link href="https://www.bilibili.com/video/BV1P3411q7os?spm_id_from=333.337.search-card.all.click">
             <el-image
-                src="http://localhost:8887/images/jiarang.png"/>
+                src="/server/images/jiarang.png"/>
           </el-link>
         </el-carousel-item>
       </el-carousel>
@@ -247,7 +247,7 @@ export default {
     login() {
       let target = 'https://github.com/login/oauth/authorize?'
       let state = uuidv4();
-      let redirect_uri = "http://localhost:8080/"
+      let redirect_uri = "http://1.14.206.60/"
       let client_id = 'ae6d4adb632935201bcb'
       let scope = 'user'
       location.href = target

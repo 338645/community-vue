@@ -139,11 +139,12 @@ export default {
     },
     getTagsFserver() {
       axios.defaults.withCredentials = true
-      axios.get("/server/getTags").then(resp => {
-        for (let i = 0; i < resp.data.length; i++) {
-          this.tags.push(resp.data[i])
-        }
-      }).catch(err => {
+      axios.get("/server/getTags")
+          .then(resp => {
+            for (let i = 0; i < resp.data.length; i++) {
+              this.tags.push(resp.data[i])
+            }
+          }).catch(err => {
         console.log(err)
       })
     },
